@@ -52,6 +52,8 @@ class Wc_out_of_stock_manager_Admin {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 
+		// Register the admin menu
+        add_action( 'admin_menu', array( $this, 'add_plugin_menu' ) );
 	}
 
 	/**
@@ -99,5 +101,77 @@ class Wc_out_of_stock_manager_Admin {
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wc_out_of_stock_manager-admin.js', array( 'jquery' ), $this->version, false );
 
 	}
+
+	 /**
+     * Add menu pages and submenus.
+     *
+     * @since    1.0.0
+     */
+    public function add_plugin_menu() {
+        add_menu_page(
+            'Out of stock! Manager', // Page title
+            'Out of stock! Manager', // Menu title
+            'manage_options',        // Capability
+            'wc_out_of_stock_manager', // Menu slug
+            array( $this, 'display_main_menu_page' ), // Callback function
+            'dashicons-upload',    // Icon URL (Dashicons icon)
+            9                        // Position
+        );
+
+        add_submenu_page(
+            'wc_out_of_stock_manager', // Parent slug
+            'Out of stock! Manager', // Page title
+            'Out of stock! Manager', // Menu title
+            'manage_options',        // Capability
+            'wc_out_of_stock_manager', // Menu slug
+            array( $this, 'display_main_menu_page' ) // Callback function
+        );
+
+        add_submenu_page(
+            'wc_out_of_stock_manager', // Parent slug
+            'Stock Values Configurator', // Page title
+            'Stock Values Configurator', // Menu title
+            'manage_options',            // Capability
+            'stock_values_configurator', // Menu slug
+            array( $this, 'display_stock_values_page' ) // Callback function
+        );
+
+        add_submenu_page(
+            'wc_out_of_stock_manager', // Parent slug
+            'Out of Stock! Texts',     // Page title
+            'Out of Stock! Texts',     // Menu title
+            'manage_options',          // Capability
+            'out_of_stock_texts',      // Menu slug
+            array( $this, 'display_out_of_stock_texts_page' ) // Callback function
+        );
+    }
+
+	 /**
+     * Display the main menu page.
+     *
+     * @since    1.0.0
+     */
+    public function display_main_menu_page() {
+        echo '<div class="wrap"><h1>Out of stock! Manager</h1></div>';
+    }
+
+    /**
+     * Display the stock values configurator page.
+     *
+     * @since    1.0.0
+     */
+    public function display_stock_values_page() {
+		 // Include the form file
+		 include plugin_dir_path( __FILE__ ) . 'partials\shvig-options-configurator.php';
+    }
+
+    /**
+     * Display the out of stock texts page.
+     *
+     * @since    1.0.0
+     */
+    public function display_out_of_stock_texts_page() {
+        echo '<div class="wrap"><h1>Out of Stock! Texts</h1></div>';
+    }
 
 }
